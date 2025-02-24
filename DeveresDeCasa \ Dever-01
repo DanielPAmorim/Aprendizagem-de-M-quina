@@ -1,0 +1,45 @@
+# Importar os módulos do sistema operacional
+import os
+import locale
+
+# Instalar pt_BR
+!/usr/share/locales/install-language-pack pt_BR
+!dpkg-reconfigure locales pt_BR
+
+# Reiniciar o processo Python
+os.kill(os.getpid(), 9)
+
+import pandas as pd
+from datetime import datetime
+
+# Dados para o CSV
+dados = [
+    {'Nome': 'Ana Silva', 'Data de Nascimento': '1990-05-15', 'Dia do Cadastro': '2025-02-23', 'Hora do Cadastro': '14:30:00'},
+    {'Nome': 'Bruno Costa', 'Data de Nascimento': '1988-10-20', 'Dia do Cadastro': '2025-02-23', 'Hora do Cadastro': '15:00:00'},
+    {'Nome': 'Carla Moreira', 'Data de Nascimento': '1995-07-08', 'Dia do Cadastro': '2025-02-23', 'Hora do Cadastro': '15:30:00'},
+    {'Nome': 'Daniel Sousa', 'Data de Nascimento': '1982-12-01', 'Dia do Cadastro': '2025-02-23', 'Hora do Cadastro': '16:00:00'},
+    {'Nome': 'Elisa Martins', 'Data de Nascimento': '2000-03-25', 'Dia do Cadastro': '2025-02-23', 'Hora do Cadastro': '16:30:00'}
+]
+
+# Criar DataFrame e exportar para CSV
+df = pd.DataFrame(dados)
+df.to_csv('dados_cadastro.csv', index=False, encoding='utf-8')
+
+print('Ficheiro CSV criado com sucesso!')
+
+# Ler o ficheiro CSV
+df = pd.read_csv('dados_cadastro.csv')
+
+# Solicitar o número do registo ao utilizador
+n = int(input('Informe o número do registo (iniciando em 1): ')) - 1
+
+# Validar o número do registo
+if 0 <= n < len(df):
+    registro = df.iloc[n]
+    nome = registro['Nome']
+    data_nasc = datetime.strptime(registro['Data de Nascimento'], '%Y-%m-%d').strftime('%d/%m/%Y')
+    data_cadastro = datetime.strptime(registro['Dia do Cadastro'], '%Y-%m-%d').strftime('%d/%m/%Y')
+    hora_cadastro = registro['Hora do Cadastro']
+    print(f'Registro {n+1}: Nome: {nome}; Data de nascimento: {data_nasc}; Data de cadastro: {data_cadastro} às {hora_cadastro} horas')
+else:
+    print('Número de registo inválido!')
